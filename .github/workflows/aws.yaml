@@ -18,7 +18,7 @@ jobs:
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::604218333462:role/ci--rust-lang--rustup
+          role-to-assume: arn:aws:iam::604218333462:role/*
           aws-region: us-east-1
       
       - name: Get User Info
