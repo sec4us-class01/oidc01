@@ -18,8 +18,9 @@ jobs:
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::604218333462:role/S4US-oidc
-          aws-region: sa-east-1
-      - name: Copy files to the test website with the AWS CLI
+          role-to-assume: arn:aws:iam::890664054962:role/ci--rust-lang--rustup
+          aws-region: us-east-1
+      
+      - name: Get User Info
         run: |
-          aws s3 ls s3://devops-sec4us.oidc.s3-sec4us/
+          aws sts get-caller-identity
