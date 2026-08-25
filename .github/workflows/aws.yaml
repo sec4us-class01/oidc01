@@ -1,4 +1,4 @@
-name: List S3
+name: Deploy EC2
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   read:
-    name: "LS aws s3"
+    name: "Aws"
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -21,6 +21,10 @@ jobs:
           role-to-assume: arn:aws:iam::604218333462:role/S4US-oidc
           aws-region: us-east-1
       
-      - name: Get User Info
+      - name: Enumera as VPCs
         run: |
           aws sts get-caller-identity
+
+          aws ec2 describe-vpcs --region us-east-2 \
+            --query 'Vpcs[].{VpcId:VpcId,Cidr:CidrBlock,Default:IsDefault,State:State,Name:Tags[?Key==`Name`]|[0].Value}' \
+            --output table
