@@ -1,4 +1,4 @@
-name: AWS Test 2
+name: List S3
 
 on:
   push:
@@ -15,8 +15,12 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::604218333462:role/S4US-oidc
+          aws-region: us-east-1
+      
       - name: Get User Info
         run: |
           aws sts get-caller-identity
-          aws s3 ls s3://devops-sec4us.oidc.s3-sec4us/
-
