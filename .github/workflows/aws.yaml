@@ -7,6 +7,9 @@ permissions:
   id-token: write # Necessário para solicitar o token OIDC
   contents: read
 
+env:
+  AWS_REGION: "us-east-2"
+
 jobs:
   read:
     name: "Aws"
@@ -19,12 +22,21 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::604218333462:role/S4US-oidc
-          aws-region: us-east-1
-      
-      - name: Enumera as VPCs
+          aws-region: ${AWS_REGION}
+
+      - name: Info user atual
         run: |
           aws sts get-caller-identity
 
-          aws ec2 describe-vpcs --region us-east-2 \
+      - name: Enumera as VPCs
+        run: |
+          aws ec2 describe-vpcs --region ${AWS_REGION} \
             --query 'Vpcs[].{VpcId:VpcId,Cidr:CidrBlock,Default:IsDefault,State:State,Name:Tags[?Key==`Name`]|[0].Value}' \
+            --output table
+
+
+      - name: Enumera Security Groups
+        run: |
+          aws ec2 describe-security-groups --region ${AWS_REGION} \
+            --query 'SecurityGroups[].{GroupId:GroupId,VpcId:VpcId,GroupName:GroupName}' \
             --output table
