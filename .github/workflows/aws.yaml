@@ -22,7 +22,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::604218333462:role/S4US-oidc
-          aws-region: ${AWS_REGION}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Info user atual
         run: |
