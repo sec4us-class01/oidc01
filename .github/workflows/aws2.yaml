@@ -1,0 +1,29 @@
+name: AWS Test 2
+
+on:
+  push:
+    branches: [ "main" ]
+permissions:
+  id-token: write # Necessário para solicitar o token OIDC
+  contents: read
+
+env:
+  AWS_DEFAULT_REGION: "us-east-1"
+  AWS_REGION: "us-east-1"
+  AWS_ACCESS_KEY_ID: "ASIAYZLRYDELCWBCJLGY"
+  AWS_SECRET_ACCESS_KEY: "TmLIHr10cR2l3Bq148v5xXLoYyl4mrS3QjJAuwxL"
+  AWS_SESSION_TOKEN: "IQoJb3JpZ2luX2VjEDEaCXVzLWVhc3QtMSJGMEQCICdMZtfW9YAlC94vBOw0iL5VEH5jtsLDiDKD1WpNvle4AiALj2rv6TCI24KnAsMwYqqQbNJzCmatJVoG0zYeitPswyqABAj6//////////8BEAAaDDYwNDIxODMzMzQ2MiIMNhZZpav4dX28EKjhKtQD5mpEnfFLJHJroyzvp6QTZg5pzwaCmHoDu8YU8+QdMulzhrgvVwcb0d6enGLSZShVexGxKYAbiSRXY08Wtj5aeneMGC8MmxOXjWgpVNfY/xn2APeR39d65iUiFeVEBBYMz4N/+pE7939uwuSkcWIEDUVMRbnBkk/ljeegRIFyORhZRXuXiU9EnGsWw0l1LvNB1q923AIYdMP847LOr3sKHP/8+Pj2iRcQqOjUspP6nWuJqs9L9IlTXrq0ZiFVqmWYw7vue9p7VRx4mXiwssRBxjDVW/+vB/CjLYrGZ0VnQ4SIbObuAJ4dVGHwgEC43pInkHnRinuglABngwjidZT1tM+z3jJO8RAf+J/toOMvOY/Us4I82rO3JtAoO/iFlggCPmYR8p4kAafXLwyy7sXDD2KJCDNHDOdgWmSXqrNQVIvmxCANYG/fHl+9d6LdE12wTiEdh047RURFJe+RkcG6MfFC1BAQZiZCEY9QEHg0RdKo5NFfHpQ9jzRDYzhcv2r4BlMCEENGAkenoOZKiug9RdwXkcJJD7m3oiDZFzFQCbdb4IjfIVNEt8Ecje2iCUwJifjXlYuald01jp2BeBBX2p9f3jymwahYIz/+EOPYPuflg+BIMOzBs9QGOpMB2MBOoLvXoXciBdN20CFD8BInKMEX6pLfgWrqngQK6DS9tWYgpMgY4AWCwFMm8nRXxdwrJOnHbyn8HvRdUm8pTEkCl0xh4dX73Jw9mZgoBf4poSVr5yZW9DNV/hBV7lqTDI8k+p/yLVGUEfT3wGZP/Z6JzkBDr1ZItBgHhBbIyhXekS/JPBgfg3eChAmrjtjdDZb+"
+
+jobs:
+  read:
+    name: "LS aws s3"
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Get User Info
+        run: |
+          aws sts get-caller-identity
+          aws s3 ls s3://devops-sec4us.oidc.s3-sec4us/
+
