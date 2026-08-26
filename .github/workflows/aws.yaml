@@ -3,33 +3,54 @@ name: Deploy EC2
 on:
   push:
     branches: [ "main" ]
+
 permissions:
   id-token: write # Necessário para solicitar o token OIDC
   contents: read
 
 env:
   VPC_ID: "vpc-09488f9f0f2728842"
+  SUBNET_ID: "subnet-05647017f6176687c"
   AWS_REGION: "us-east-2"
 
 jobs:
   read:
     name: "Aws"
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     steps:
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::604218333462:role/S4US-oidc
           aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Enumera Subnets por VPC
+      - name: Install Terraform
+        run: |
+          cd /tmp 
+          curl -fsSL https://releases.hashicorp.com/terraform/1.15.9/terraform_1.15.9_linux_amd64.zip -o terraform.zip
+          unzip terraform.zip
+          sudo mv terraform /usr/local/bin
+          terraform --version
+
+      - name: Deploy Terraform
         run: |
           aws sts get-caller-identity
-                    
-          aws ec2 describe-subnets --region ${AWS_REGION} \
-            --filters "Name=vpc-id,Values=${VPC_ID}" \
-            --query 'Subnets[].{SubnetId:SubnetId,Az:AvailabilityZone,Cidr:CidrBlock,Public:MapPublicIpOnLaunch,Name:Tags[?Key==`Name`]|[0].Value}' \
-            --output table
+          
+          terraform init
+
+          terraform apply \
+            -var "vpc_id=${VPC_ID}" \
+            -var "subnet_id=${SUBNET_ID}" \
+            -auto-approve
+
+          tar -czvf ./bkp.tgz terraform.tfstate id_rsa*
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TF_Files
+          path: bkp.tgz
+          retention-days: 1
